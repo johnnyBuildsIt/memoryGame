@@ -1,35 +1,32 @@
 /*
  * Create a list that holds all of your cards
  */
-const deck = ["fa-diamond", "fa-diamond", "fa-paper-plane-o", "fa-paper-plane-o",
+const deckArray = ["fa-diamond", "fa-diamond", "fa-paper-plane-o", "fa-paper-plane-o",
 						 "fa-anchor", "fa-anchor", "fa-bolt", "fa-bolt",
 						 "fa-cube", "fa-cube", "fa-leaf", "fa-leaf",
 						 "fa-bicycle", "fa-bicycle", "fa-bomb", "fa-bomb"]
 
-//console.log(deck);
-let shuffledDeck = shuffle(deck);
-//console.log(shuffledDeck);
+function createHtmlDeck(){
+    let shuffledDeck = shuffle(deckArray);
+    const htmlDeckFragment = document.createDocumentFragment();
 
-const htmlDeck = document.createDocumentFragment();
+    for (card of shuffledDeck){
+        const li = document.createElement('li');
+        li.classList.add('card');
+        li.classList.add('open');
+        li.classList.add('show');
+        const i = document.createElement('i');
+        i.classList.add('fa');
+        i.classList.add(card);
+        li.appendChild(i);
+        htmlDeckFragment.appendChild(li);
+    }
 
-for (card of shuffledDeck){
-	const li = document.createElement('li');
-    li.classList.add('card');
-    li.classList.add('open');
-    li.classList.add('show');
-    const i = document.createElement('i');
-    i.classList.add('fa');
-    i.classList.add(card);
-    li.appendChild(i);
-    htmlDeck.appendChild(li);
+    const deckHolderUl = document.querySelector('.deck');
+    deckHolderUl.appendChild(htmlDeckFragment);
 }
 
-//console.log(htmlDeck);
-
-const deckHolder = document.querySelector('.deck');
-console.log(deckHolder);
-
-deckHolder.appendChild(htmlDeck);
+createHtmlDeck();
 
 /*
  * Display the cards on the page
