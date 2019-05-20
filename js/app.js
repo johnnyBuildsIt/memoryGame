@@ -58,6 +58,7 @@ function cardClick(event){
 
         if(!card.classList.contains('show')){
             card.classList.add('open', 'show');
+            // add card to a list of open cards
         } else {
             card.classList.remove('open', 'show');
         }
