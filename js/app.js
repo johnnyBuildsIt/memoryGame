@@ -13,26 +13,13 @@ const deckArray = ["fa-diamond", "fa-diamond", "fa-paper-plane-o", "fa-paper-pla
  *   - add each card's HTML to the page
  */
 function createHtmlDeck(){
-    let shuffledDeck = shuffle(deckArray);
-    const htmlDeckFragment = document.createDocumentFragment();
 
-    for (card of shuffledDeck){
-        const li = document.createElement('li');
-        li.classList.add('card');
-        li.classList.add('open');
-        li.classList.add('show');
-        const i = document.createElement('i');
-        i.classList.add('fa');
-        i.classList.add(card);
-        li.appendChild(i);
-        htmlDeckFragment.appendChild(li);
-    }
-
+    const shuffledDeck = shuffle(deckArray);
+    const htmlDeckFragment = buildFragment(shuffledDeck);
     const deckHolderUl = document.querySelector('.deck');
     deckHolderUl.appendChild(htmlDeckFragment);
+    deckHolderUl.addEventListener('click', cardClick);
 }
-
-createHtmlDeck();
 
 
 // Shuffle function from http://stackoverflow.com/a/2450976
@@ -49,6 +36,35 @@ function shuffle(array) {
 
     return array;
 }
+
+function buildFragment(shuffledDeck){
+    const htmlDeckFragment = document.createDocumentFragment();
+
+    for (card of shuffledDeck){
+        const li = document.createElement('li');
+        li.classList.add('card');
+        const i = document.createElement('i');
+        i.classList.add('fa');
+        i.classList.add(card);
+        li.appendChild(i);
+        htmlDeckFragment.appendChild(li);
+    }
+
+    return htmlDeckFragment;
+}
+
+function cardClick(event){
+        const card = event.target;
+
+        if(!card.classList.contains('show')){
+            card.classList.add('open', 'show');
+            // add card to a list of open cards
+        } else {
+            card.classList.remove('open', 'show');
+        }
+    }
+
+createHtmlDeck();
 
 
 /*
