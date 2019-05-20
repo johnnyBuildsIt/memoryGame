@@ -15,7 +15,6 @@ let openCards = [];
  *   - add each card's HTML to the page
  */
 function createHtmlDeck(){
-
     const shuffledDeck = shuffle(deckArray);
     const htmlDeckFragment = buildFragment(shuffledDeck);
     const deckHolderUl = document.querySelector('.deck');
@@ -55,18 +54,22 @@ function buildFragment(shuffledDeck){
     return htmlDeckFragment;
 }
 
-function cardClick(event){
-        const card = event.target;
 
-        if(!card.classList.contains('show')){
-            card.classList.add('open', 'show');
-            openCards.push(card);
-            console.log(openCards);
-            console.log(card.firstChild.classList);
-        } else {
-            card.classList.remove('open', 'show');
-        }
+function cardClick(event){
+    const card = event.target;
+
+    if(!card.classList.contains('show')){
+        flipToFront(card);
+    } else {
+        card.classList.remove('open', 'show');
     }
+}
+
+function flipToFront(card){
+    card.classList.add('open', 'show');
+    openCards.push(card);
+}
+
 
 createHtmlDeck();
 
