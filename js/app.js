@@ -30,6 +30,12 @@ function createHtmlDeck(){
 
     const deckHolderUl = document.querySelector('.deck');
     deckHolderUl.appendChild(htmlDeckFragment);
+
+    function cardClick(event){
+        event.target.classList.remove('open', 'show');
+    }
+
+    deckHolderUl.addEventListener('click', cardClick);
 }
 
 createHtmlDeck();
