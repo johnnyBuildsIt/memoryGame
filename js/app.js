@@ -6,6 +6,8 @@ const deckArray = ["fa-diamond", "fa-diamond", "fa-paper-plane-o", "fa-paper-pla
 						 "fa-cube", "fa-cube", "fa-leaf", "fa-leaf",
 						 "fa-bicycle", "fa-bicycle", "fa-bomb", "fa-bomb"]
 
+let openCards = [];
+
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
