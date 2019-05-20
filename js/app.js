@@ -13,20 +13,13 @@ const deckArray = ["fa-diamond", "fa-diamond", "fa-paper-plane-o", "fa-paper-pla
  *   - add each card's HTML to the page
  */
 function createHtmlDeck(){
-    
+
     const shuffledDeck = shuffle(deckArray);
     const htmlDeckFragment = buildFragment(shuffledDeck);
     const deckHolderUl = document.querySelector('.deck');
     deckHolderUl.appendChild(htmlDeckFragment);
-
-    function cardClick(event){
-        event.target.classList.remove('open', 'show');
-    }
-
     deckHolderUl.addEventListener('click', cardClick);
 }
-
-createHtmlDeck();
 
 
 // Shuffle function from http://stackoverflow.com/a/2450976
@@ -49,7 +42,7 @@ function buildFragment(shuffledDeck){
 
     for (card of shuffledDeck){
         const li = document.createElement('li');
-        li.classList.add('card', 'open', 'show');
+        li.classList.add('card');
         const i = document.createElement('i');
         i.classList.add('fa');
         i.classList.add(card);
@@ -59,6 +52,18 @@ function buildFragment(shuffledDeck){
 
     return htmlDeckFragment;
 }
+
+function cardClick(event){
+        const card = event.target;
+
+        if(!card.classList.contains('show')){
+            card.classList.add('open', 'show');
+        } else {
+            card.classList.remove('open', 'show');
+        }
+    }
+
+createHtmlDeck();
 
 
 /*
