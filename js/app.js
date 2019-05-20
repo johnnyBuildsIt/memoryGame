@@ -60,7 +60,9 @@ function cardClick(event){
 
         if(!card.classList.contains('show')){
             card.classList.add('open', 'show');
-            // add card to a list of open cards
+            openCards.push(card);
+            console.log(openCards);
+            console.log(card.firstChild.classList);
         } else {
             card.classList.remove('open', 'show');
         }
