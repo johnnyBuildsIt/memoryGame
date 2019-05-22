@@ -6,6 +6,9 @@ const deckArray = ["fa-diamond", "fa-diamond", "fa-paper-plane-o", "fa-paper-pla
 						 "fa-cube", "fa-cube", "fa-leaf", "fa-leaf",
 						 "fa-bicycle", "fa-bicycle", "fa-bomb", "fa-bomb"]
 
+let openCards = [];
+let cardClickBlock = false;
+
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -13,7 +16,6 @@ const deckArray = ["fa-diamond", "fa-diamond", "fa-paper-plane-o", "fa-paper-pla
  *   - add each card's HTML to the page
  */
 function createHtmlDeck(){
-
     const shuffledDeck = shuffle(deckArray);
     const htmlDeckFragment = buildFragment(shuffledDeck);
     const deckHolderUl = document.querySelector('.deck');
@@ -53,16 +55,60 @@ function buildFragment(shuffledDeck){
     return htmlDeckFragment;
 }
 
-function cardClick(event){
-        const card = event.target;
 
-        if(!card.classList.contains('show')){
-            card.classList.add('open', 'show');
-            // add card to a list of open cards
-        } else {
-            card.classList.remove('open', 'show');
-        }
+function cardClick(event){
+    const card = event.target;
+    
+    if(!card.classList.contains('show') && card.nodeName === 'LI' && !cardClickBlock){
+        console.log(card);
+        flipToFront(card);
+        checkForMatch();
+    } else {
+        //flipToBack(card);
     }
+}
+
+function flipToFront(card){
+    card.classList.add('open', 'show');
+    openCards.push(card);
+    if(openCards.length == 2){
+        cardClickBlock = true;
+    }
+}
+
+function flipToBack(card){
+    card.classList.remove('open', 'show')
+}
+
+function markAsMatched(card0, card1){
+    card0.classList.add('match');
+    card1.classList.add('match');
+}
+
+function flipTwo(){
+    openCards[0].classList.remove('open', 'show');
+    openCards[1].classList.remove('open', 'show');
+    openCards = [];
+    cardClickBlock = false;
+}
+
+function checkForMatch(){
+    if(openCards.length === 2){
+        const card0 = openCards[0];
+        const card1 = openCards[1];
+        const card0ClassList = card0.firstChild.classList[1];
+        const card1ClassList = card1.firstChild.classList[1];
+        console.log(openCards);
+        setTimeout(flipTwo, 1000)
+        if(card0ClassList === card1ClassList){
+            markAsMatched(card0, card1);
+            //openCards = [];
+        } else {
+            //openCards = [];
+        }
+    } 
+}
+
 
 createHtmlDeck();
 
