@@ -57,17 +57,51 @@ function buildFragment(shuffledDeck){
 
 function cardClick(event){
     const card = event.target;
-
-    if(!card.classList.contains('show')){
+    
+    if(!card.classList.contains('show') && card.nodeName === 'LI'){
+        console.log(card);
         flipToFront(card);
+        checkForMatch();
     } else {
-        card.classList.remove('open', 'show');
+        //flipToBack(card);
     }
 }
 
 function flipToFront(card){
     card.classList.add('open', 'show');
     openCards.push(card);
+}
+
+function flipToBack(card){
+    card.classList.remove('open', 'show')
+}
+
+function markAsMatched(card0, card1){
+    card0.classList.add('match');
+    card1.classList.add('match');
+}
+
+function flipTwo(){
+    openCards[0].classList.remove('open', 'show');
+    openCards[1].classList.remove('open', 'show');
+    openCards = [];
+}
+
+function checkForMatch(){
+    if(openCards.length === 2){
+        const card0 = openCards[0];
+        const card1 = openCards[1];
+        const card0ClassList = card0.firstChild.classList[1];
+        const card1ClassList = card1.firstChild.classList[1];
+        console.log(openCards);
+        setTimeout(flipTwo, 1000)
+        if(card0ClassList === card1ClassList){
+            markAsMatched(card0, card1);
+            //openCards = [];
+        } else {
+            //openCards = [];
+        }
+    } 
 }
 
 
