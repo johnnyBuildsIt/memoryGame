@@ -7,6 +7,7 @@ const deckArray = ["fa-diamond", "fa-diamond", "fa-paper-plane-o", "fa-paper-pla
 						 "fa-bicycle", "fa-bicycle", "fa-bomb", "fa-bomb"]
 
 let openCards = [];
+let cardClickBlock = false;
 
 /*
  * Display the cards on the page
@@ -58,7 +59,7 @@ function buildFragment(shuffledDeck){
 function cardClick(event){
     const card = event.target;
     
-    if(!card.classList.contains('show') && card.nodeName === 'LI'){
+    if(!card.classList.contains('show') && card.nodeName === 'LI' && !cardClickBlock){
         console.log(card);
         flipToFront(card);
         checkForMatch();
@@ -70,6 +71,9 @@ function cardClick(event){
 function flipToFront(card){
     card.classList.add('open', 'show');
     openCards.push(card);
+    if(openCards.length == 2){
+        cardClickBlock = true;
+    }
 }
 
 function flipToBack(card){
@@ -85,6 +89,7 @@ function flipTwo(){
     openCards[0].classList.remove('open', 'show');
     openCards[1].classList.remove('open', 'show');
     openCards = [];
+    cardClickBlock = false;
 }
 
 function checkForMatch(){
