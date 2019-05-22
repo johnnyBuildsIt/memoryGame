@@ -8,6 +8,7 @@ const deckArray = ["fa-diamond", "fa-diamond", "fa-paper-plane-o", "fa-paper-pla
 
 let openCards = [];
 let cardClickBlock = false;
+let matches = 0;
 
 /*
  * Display the cards on the page
@@ -92,19 +93,34 @@ function flipTwo(){
     cardClickBlock = false;
 }
 
+function checkForEnd(){
+    if(matches === 8){
+        resetGame();
+        alert('game over');
+    }
+}
+
+function resetGame(){
+    const deckHolderUl = document.querySelector('.deck');
+    deckHolderUl.innerHTML = '';
+    createHtmlDeck();
+    openCards = [];
+    matches = 0;
+    cardClickBlock = false;
+}
+
+
 function checkForMatch(){
     if(openCards.length === 2){
         const card0 = openCards[0];
         const card1 = openCards[1];
         const card0ClassList = card0.firstChild.classList[1];
         const card1ClassList = card1.firstChild.classList[1];
-        console.log(openCards);
         setTimeout(flipTwo, 1000)
         if(card0ClassList === card1ClassList){
             markAsMatched(card0, card1);
-            //openCards = [];
-        } else {
-            //openCards = [];
+            matches += 1;
+            checkForEnd();
         }
     } 
 }
