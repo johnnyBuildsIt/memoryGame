@@ -13,7 +13,7 @@ firstMove = true;
 const startTime = Date.now();
 let elapsedTime;
 let intervalKey;
-let movesCount;
+let movesCount = 0;
 
 /*
  * Display the cards on the page
@@ -80,6 +80,8 @@ function cardClick(event){
 
 function updateMovesCount(){
     const htmlMovesText = document.querySelector('.moves');
+    movesCount += 1;
+    htmlMovesText.textContent = movesCount;
     
 }
 
@@ -144,6 +146,7 @@ function resetGame(){
 
 function checkForMatch(){
     if(openCards.length === 2){
+        updateMovesCount();
         const card0 = openCards[0];
         const card1 = openCards[1];
         const card0ClassList = card0.firstChild.classList[1];
