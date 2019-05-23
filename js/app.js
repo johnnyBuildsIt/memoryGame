@@ -9,6 +9,11 @@ const deckArray = ["fa-diamond", "fa-diamond", "fa-paper-plane-o", "fa-paper-pla
 let openCards = [];
 let cardClickBlock = false;
 let matches = 0;
+firstMove = true;
+const startTime = Date.now();
+let elapsedTime;
+let intervalKey;
+let movesCount;
 
 /*
  * Display the cards on the page
@@ -59,14 +64,39 @@ function buildFragment(shuffledDeck){
 
 function cardClick(event){
     const card = event.target;
-    
+
     if(!card.classList.contains('show') && card.nodeName === 'LI' && !cardClickBlock){
+        if(firstMove) {
+            firstMove = false;
+            startTimer();
+        }
         console.log(card);
         flipToFront(card);
         checkForMatch();
     } else {
         //flipToBack(card);
     }
+}
+
+function updateMovesCount(){
+    const htmlMovesText = document.querySelector('.moves');
+    
+}
+
+function startTimer(){
+    const htmlTimeText = document.querySelector('.timer');
+    function updateTimer(){
+        // https://stackoverflow.com/questions/29971898/how-to-create-an-accurate-timer-in-javascript
+        elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        htmlTimeText.innerHTML = elapsedTime;
+    }
+    intervalKey = setInterval(updateTimer, 1000);
+}
+
+function resetTimer(){
+    clearInterval(intervalKey);
+    const htmlTimeText = document.querySelector('.timer');
+    htmlTimeText.innerHTML = '0';
 }
 
 function flipToFront(card){
@@ -97,6 +127,7 @@ function checkForEnd(){
     if(matches === 8){
         resetGame();
         alert('game over');
+        resetTimer();s
     }
 }
 
@@ -107,6 +138,7 @@ function resetGame(){
     openCards = [];
     matches = 0;
     cardClickBlock = false;
+    firstMove = true;
 }
 
 
