@@ -1,22 +1,26 @@
-/*
- * Create a list that holds all of your cards
- */
+/****************************
+list that holds all the cards
+****************************/
 const deckArray = ["fa-diamond", "fa-diamond", "fa-paper-plane-o", "fa-paper-plane-o",
 						 "fa-anchor", "fa-anchor", "fa-bolt", "fa-bolt",
 						 "fa-cube", "fa-cube", "fa-leaf", "fa-leaf",
 						 "fa-bicycle", "fa-bicycle", "fa-bomb", "fa-bomb"]
-
 let openCards = [];
 let cardClickBlock = false;
 let matches = 0;
-firstMove = true;
-const startTime = Date.now();
+let firstMove = true;
+let movesCount = 0;
+let starsRemaining = 3;
+let startTime;
 let elapsedTime;
 let intervalKey;
-let movesCount = 0;
 let starList;
+let htmlTimeText;
 
 
+/***********************
+functions for game setup
+***********************/
 function createHtmlDeck(){
     const shuffledDeck = shuffle(deckArray);
     const htmlDeckFragment = buildFragment(shuffledDeck);
@@ -25,8 +29,8 @@ function createHtmlDeck(){
     deckHolderUl.appendChild(htmlDeckFragment);
     deckHolderUl.addEventListener('click', cardClick);
     resetButton.addEventListener('click', resetGame);
-    setupStars();
 }
+
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -42,6 +46,7 @@ function shuffle(array) {
 
     return array;
 }
+
 
 function buildFragment(shuffledDeck){
     const htmlDeckFragment = document.createDocumentFragment();
@@ -59,32 +64,31 @@ function buildFragment(shuffledDeck){
     return htmlDeckFragment;
 }
 
+
 function setupStars(){
     starList = document.getElementsByClassName('fa-star');
-    console.log(starList);
 }
- 
-function resetStars(){
-    const htmlUlFragment = document.createDocumentFragment();
-    const starUl = document.querySelector('.stars')
-    for (j = 0; j < 3; j++){
-        const li = document.createElement('li');
-        const i = document.createElement('i');
-        i.classList.add('fa');
-        i.classList.add('fa-star');
-        li.appendChild(i)
-        htmlUlFragment.appendChild(li);
+
+
+createHtmlDeck();
+setupStars();
+
+
+/**********************
+functions for game play
+**********************/
+function cardClick(event){
+    const card = event.target;
+
+    if(!card.classList.contains('show') && card.nodeName === 'LI' && !cardClickBlock){
+        if(firstMove) {
+            startTime = Date.now();
+            firstMove = false;
+            startTimer();
+        }
+        flipToFront(card);
+        checkForMatch();
     }
-    starUl.innerHTML = '';
-    starUl.appendChild(htmlUlFragment);
-}
-
-
-function updateMovesCount(){
-    const htmlMovesText = document.querySelector('.moves');
-    movesCount += 1;
-    htmlMovesText.textContent = movesCount;
-    
 }
 
 function startTimer(){
@@ -94,19 +98,7 @@ function startTimer(){
         elapsedTime = Math.floor((Date.now() - startTime) / 1000);
         htmlTimeText.innerHTML = elapsedTime;
     }
-    intervalKey = setInterval(updateTimer, 1000);
-}
-
-function resetTimer(){
-    clearInterval(intervalKey);
-    const htmlTimeText = document.querySelector('.timer');
-    htmlTimeText.innerHTML = '0';
-}
-
-function resetMoves(){
-    const htmlMovesText = document.querySelector('.moves');
-    movesCount = 0;
-    htmlMovesText.textContent = 0;
+    intervalKey = setInterval(updateTimer, 500);
 }
 
 function flipToFront(card){
@@ -114,53 +106,6 @@ function flipToFront(card){
     openCards.push(card);
     if(openCards.length == 2){
         cardClickBlock = true;
-    }
-}
-
-function flipToBack(card){
-    card.classList.remove('open', 'show')
-}
-
-function markAsMatched(card0, card1){
-    card0.classList.add('match');
-    card1.classList.add('match');
-}
-
-function flipTwo(){
-    openCards[0].classList.remove('open', 'show');
-    openCards[1].classList.remove('open', 'show');
-    openCards = [];
-    cardClickBlock = false;
-}
-
-function checkForEnd(){
-    if(matches === 8){
-        alert(`Done!! moves: ${movesCount}, time: ${elapsedTime}`);
-        resetGame();
-    }
-}
-
-function resetGame(){
-    const deckHolderUl = document.querySelector('.deck');
-    deckHolderUl.innerHTML = '';
-    createHtmlDeck();
-    openCards = [];
-    matches = 0;
-    cardClickBlock = false;
-    firstMove = true;
-    resetTimer();
-    resetMoves();
-    resetStars();
-}
-
-
-function updateStars() {
-    if (movesCount === 9){
-        starList[0].parentElement.removeChild(starList[0]);
-    } else if (movesCount === 13) {
-        starList[0].parentElement.removeChild(starList[0]);
-    } else if(movesCount === 18 ) {
-        starList[0].parentElement.removeChild(starList[0]);
     }
 }
 
@@ -182,23 +127,85 @@ function checkForMatch(){
     } 
 }
 
+function updateMovesCount(){
+    const htmlMovesText = document.querySelector('.moves');
+    movesCount += 1;
+    htmlMovesText.textContent = movesCount;
+    
+}
 
-createHtmlDeck();
-
-function cardClick(event){
-    const card = event.target;
-
-    if(!card.classList.contains('show') && card.nodeName === 'LI' && !cardClickBlock){
-        if(firstMove) {
-            firstMove = false;
-            startTimer();
-        }
-        console.log(card);
-        flipToFront(card);
-        checkForMatch();
-    } else {
-        //flipToBack(card);
+function updateStars() {
+    if (movesCount === 10){
+        starList[0].parentElement.removeChild(starList[0]);
+        starsRemaining -= 1;
+    } else if (movesCount === 16) {
+        starList[0].parentElement.removeChild(starList[0]);
+        starsRemaining -= 1;
     }
+}
+
+function flipTwo(){
+    openCards[0].classList.remove('open', 'show');
+    openCards[1].classList.remove('open', 'show');
+    openCards = [];
+    cardClickBlock = false;
+}
+
+function markAsMatched(card0, card1){
+    card0.classList.add('match');
+    card1.classList.add('match');
+}
+
+function checkForEnd(){
+    if(matches === 8){
+        alert(`Done!! moves: ${movesCount}, time: ${elapsedTime}, stars: ${starsRemaining}`);
+        resetGame();
+    }
+}
+
+
+/***********************
+functions for game reset
+***********************/
+function resetGame(){
+    const deckHolderUl = document.querySelector('.deck');
+    deckHolderUl.innerHTML = '';
+    createHtmlDeck();
+    openCards = [];
+    matches = 0;
+    cardClickBlock = false;
+    firstMove = true;
+    resetTimer();
+    resetMoves();
+    resetStars();
+}
+
+function resetTimer(){
+    clearInterval(intervalKey);
+    const htmlTimeText = document.querySelector('.timer');
+    htmlTimeText.innerHTML = '0';
+}
+
+function resetMoves(){
+    const htmlMovesText = document.querySelector('.moves');
+    movesCount = 0;
+    htmlMovesText.textContent = 0;
+}
+
+function resetStars(){
+    starsRemaining = 3;
+    const htmlUlFragment = document.createDocumentFragment();
+    const starUl = document.querySelector('.stars')
+    for (j = 0; j < 3; j++){
+        const li = document.createElement('li');
+        const i = document.createElement('i');
+        i.classList.add('fa');
+        i.classList.add('fa-star');
+        li.appendChild(i)
+        htmlUlFragment.appendChild(li);
+    }
+    starUl.innerHTML = '';
+    starUl.appendChild(htmlUlFragment);
 }
 
 
