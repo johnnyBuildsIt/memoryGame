@@ -14,21 +14,19 @@ const startTime = Date.now();
 let elapsedTime;
 let intervalKey;
 let movesCount = 0;
+let starList;
 
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
+
 function createHtmlDeck(){
     const shuffledDeck = shuffle(deckArray);
     const htmlDeckFragment = buildFragment(shuffledDeck);
     const deckHolderUl = document.querySelector('.deck');
+    const resetButton = document.querySelector('.restart');
     deckHolderUl.appendChild(htmlDeckFragment);
     deckHolderUl.addEventListener('click', cardClick);
+    resetButton.addEventListener('click', resetGame);
+    setupStars();
 }
-
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -61,22 +59,26 @@ function buildFragment(shuffledDeck){
     return htmlDeckFragment;
 }
 
-
-function cardClick(event){
-    const card = event.target;
-
-    if(!card.classList.contains('show') && card.nodeName === 'LI' && !cardClickBlock){
-        if(firstMove) {
-            firstMove = false;
-            startTimer();
-        }
-        console.log(card);
-        flipToFront(card);
-        checkForMatch();
-    } else {
-        //flipToBack(card);
-    }
+function setupStars(){
+    starList = document.getElementsByClassName('fa-star');
+    console.log(starList);
 }
+ 
+function resetStars(){
+    const htmlUlFragment = document.createDocumentFragment();
+    const starUl = document.querySelector('.stars')
+    for (j = 0; j < 3; j++){
+        const li = document.createElement('li');
+        const i = document.createElement('i');
+        i.classList.add('fa');
+        i.classList.add('fa-star');
+        li.appendChild(i)
+        htmlUlFragment.appendChild(li);
+    }
+    starUl.innerHTML = '';
+    starUl.appendChild(htmlUlFragment);
+}
+
 
 function updateMovesCount(){
     const htmlMovesText = document.querySelector('.moves');
@@ -99,6 +101,12 @@ function resetTimer(){
     clearInterval(intervalKey);
     const htmlTimeText = document.querySelector('.timer');
     htmlTimeText.innerHTML = '0';
+}
+
+function resetMoves(){
+    const htmlMovesText = document.querySelector('.moves');
+    movesCount = 0;
+    htmlMovesText.textContent = 0;
 }
 
 function flipToFront(card){
@@ -127,9 +135,8 @@ function flipTwo(){
 
 function checkForEnd(){
     if(matches === 8){
+        alert(`Done!! moves: ${movesCount}, time: ${elapsedTime}`);
         resetGame();
-        alert('game over');
-        resetTimer();s
     }
 }
 
@@ -141,12 +148,27 @@ function resetGame(){
     matches = 0;
     cardClickBlock = false;
     firstMove = true;
+    resetTimer();
+    resetMoves();
+    resetStars();
+}
+
+
+function updateStars() {
+    if (movesCount === 9){
+        starList[0].parentElement.removeChild(starList[0]);
+    } else if (movesCount === 13) {
+        starList[0].parentElement.removeChild(starList[0]);
+    } else if(movesCount === 18 ) {
+        starList[0].parentElement.removeChild(starList[0]);
+    }
 }
 
 
 function checkForMatch(){
     if(openCards.length === 2){
         updateMovesCount();
+        updateStars();
         const card0 = openCards[0];
         const card1 = openCards[1];
         const card0ClassList = card0.firstChild.classList[1];
@@ -162,6 +184,22 @@ function checkForMatch(){
 
 
 createHtmlDeck();
+
+function cardClick(event){
+    const card = event.target;
+
+    if(!card.classList.contains('show') && card.nodeName === 'LI' && !cardClickBlock){
+        if(firstMove) {
+            firstMove = false;
+            startTimer();
+        }
+        console.log(card);
+        flipToFront(card);
+        checkForMatch();
+    } else {
+        //flipToBack(card);
+    }
+}
 
 
 /*
